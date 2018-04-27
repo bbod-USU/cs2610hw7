@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<html>
+	 <head>
+         {% load static %}
+		<title>Fetching data from Quandl</title>
+		<link rel="stylesheet" type="text/css" href= "{% static "/main/styles.css" %}"/>
+	 </head>
+	 <body onload="fetch()">
+		<div class="shadowed green nice-box">
+			<h2>Worth Your Weight In Gold</h2>
+	    </div>
+
+            <form>
+                <input type = "number" step = "%.01" id = "userWeight"/>
+	            <div class="shadowed blue nice-box flex-rows">
+		            <button type="button" onclick="getConversion()">Calculate!</button>
+                </div>
+                <div class= "shadowed red stuff-box flex-rows">
+                    <p id="quandl"></p>
+                </div>
+            </form>
+
+
+	   <script>
+
+	   var apiKey = 'yNXwKyYV35g-Uc-BnFxg';
+	   var value;
+
+       function getStartDate() {
+           var d = new Date(Date.now()),
+               month = '' + (d.getMonth() + 1),
+               day = '' + d.getDate()-5,
+               year = d.getFullYear();
+           if (month.length < 2) month = '0' + month;
+           if (day.length < 2) day = '0' + day;
+           return [year, month, day].join('-');
+       }
+       function getEndDate() {
+           var d = new Date(Date.now()),
+               month = '' + (d.getMonth() + 1),
+               day = '' + d.getDate(),
+               year = d.getFullYear();
+           if (month.length < 2) month = '0' + month;
+           if (day.length < 2) day = '0' + day;
+           return [year, month, day].join('-');
+       }
+
+
+
+
+       var start = getStartDate(),
+	       end   = getEndDate();
+
+       var goldRUrl = "https://www.quandl.com/api/v3/datasets/LBMA/GOLD.json?api_key=" + apiKey +
+           "&column_index=2&start_date=" + start + "&end_date=" + end;
+
+       var myData;
+       var theData;
+       var getConversion = function() {
+           var weightLbs = +document.getElementById("userWeight").value;
+           var unitconvURL = "http://127.0.0.1:8000/conversion/json?from=lbs&to=t_oz&value=" + weightLbs;
+		   var xhr = new XMLHttpRequest();
+		   xhr.open('GET', unitconvURL);
+		   xhr.responseType = 'json';
+		   xhr.onload = function() {
+			   myData = xhr.response;
+			   console.log(myData);
+			   if ('error' in myData){document.querySelector('#quandl').textContent = "Error: "+ myData['error']}
+			   else {
+			       var weightValue = myData['value'] * theData.dataset.data[0][1];
+			       var weightValue = parseFloat(weightValue).toFixed(2);
+                   document.querySelector('#quandl').textContent = "Your weight in gold: $"+weightValue;
+               }
+		   };
+		   xhr.send();
+	   };
+
+
+	   var fetch = function() {
+		   var xhr = new XMLHttpRequest();
+		   xhr.open('GET', goldRUrl);
+		   xhr.responseType = 'json';
+		   xhr.onload = function() {
+			   theData = xhr.response;
+			   console.log(theData);
+			   value = theData.dataset.data[0][1];
+{#			   if (theData.dataset.data){document.querySelector('#quandl').textContent = theData.dataset.data[0][1] + " Some data was fetched into 'theData'" + end;}#}
+			  // document.title = theData.dataset.name + " from Quandl's API"};
+		   };
+		   xhr.send();
+	   }
+
+       </script>
+
+	</body>
+</html>
