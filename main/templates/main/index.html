@@ -85,8 +85,7 @@
 			   theData = xhr.response;
 			   console.log(theData);
 			   value = theData.dataset.data[0][1];
-{#			   if (theData.dataset.data){document.querySelector('#quandl').textContent = theData.dataset.data[0][1] + " Some data was fetched into 'theData'" + end;}#}
-			  // document.title = theData.dataset.name + " from Quandl's API"};
+			   document.title = theData.dataset.name + " from Quandl's API"
 		   };
 		   xhr.send();
 	   }
