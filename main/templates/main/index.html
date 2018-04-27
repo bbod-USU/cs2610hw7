@@ -69,8 +69,8 @@
 			   if ('error' in myData){document.querySelector('#quandl').textContent = "Error: "+ myData['error']}
 			   else {
 			       var weightValue = myData['value'] * theData.dataset.data[0][1];
-			       var weightValue = parseFloat(weightValue).toFixed(2);
-                   document.querySelector('#quandl').textContent = "Your weight in gold: $"+weightValue;
+                   var weightValue1 = parseFloat(weightValue).toFixed(2);
+                   document.querySelector('#quandl').textContent = "Your weight in gold: $"+weightValue1;
                }
 		   };
 		   xhr.send();
